@@ -1,0 +1,9 @@
+/*remove the top of the page padding*/
+.block-container {
+            padding-top: 1rem !important;
+}
+
+ /*Sidebar: reduce or increase width*/
+section[data-testid="stSidebar"] {
+    width: 280px !important;      /* Adjust this width as needed */
+} 

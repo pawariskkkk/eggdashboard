@@ -1,0 +1,12 @@
+#set auto rerun
+
+[server]
+runOnSave = true
+fileWatcherType = "poll"
+
+#set theme color
+[theme]
+primaryColor="#4ba6ff"
+backgroundColor="#131212"
+secondaryBackgroundColor="#1f1f20"
+textColor="#d4d3d3"
