@@ -2,12 +2,21 @@ import streamlit as st
 import pandas as pd
 from components.datatable.filter import filter
 
+#to save session between page for input
+def secondSessionSave(name):
+    st.session_state["%s_save" %name] = st.session_state[name]
+
 #Data table page
 def Datatable():
    
     # Layout
     st.set_page_config(layout="wide")
     st.title("📄 Data Table")
+
+    secondSessionSave("tray_amount_dashboard")
+    secondSessionSave("farm_dashboard")
+    secondSessionSave("house_dashboard")
+    secondSessionSave("mfg_dashboard")
 
     # Sample Data
     df = pd.read_excel("data1.xlsx", sheet_name="mock_egg_data")

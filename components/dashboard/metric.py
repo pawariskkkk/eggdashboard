@@ -13,7 +13,17 @@ def metric(name, top, down, label, pic, head):
         
         st.progress(top / down if top <= down else 1/1)
 
+#to save session between page for input
+def firstSessionSave(name):
+    if name not in st.session_state and ("%s_save" %name in st.session_state):
+        st.session_state[name] = st.session_state["%s_save" %name]
+    
 def fourcolumnsMetric():
+    
+    firstSessionSave("tray_amount_dashboard")
+    firstSessionSave("farm_dashboard")
+    firstSessionSave("house_dashboard")
+    firstSessionSave("mfg_dashboard")
     
     if "tray_amount_dashboard" not in st.session_state:
         st.session_state.tray_amount_dashboard = 150

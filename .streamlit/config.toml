@@ -2,7 +2,6 @@
 
 [server]
 runOnSave = true
-fileWatcherType = "poll"
 
 #set theme color
 [theme]
