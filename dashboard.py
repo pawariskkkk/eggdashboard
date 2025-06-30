@@ -1,9 +1,9 @@
 import streamlit as st
 from utils import createContainerWithColor
-from components.dashboard.chart import renderPiechart
-from components.dashboard.camera import cameraFeed
-from components.dashboard.control import controlPanel
-from components.dashboard.metric import fourcolumnsMetric
+from chart import renderPiechart
+from camera import cameraFeed
+from control import controlPanel
+from metric import fourcolumnsMetric
 
 def Dashboard():
     st.title("Real-time Monitoring")

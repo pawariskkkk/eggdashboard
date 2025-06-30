@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from components.datatable.filter import filter
+from filter import filter
 
 #to save session between page for input
 def secondSessionSave(name):

@@ -1,5 +1,5 @@
 import streamlit as st
-from components.sidebar import sidebar
+from sidebar import sidebar
 
 # Page setup
 st.set_page_config(layout="wide")

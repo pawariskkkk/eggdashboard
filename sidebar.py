@@ -1,6 +1,6 @@
 import streamlit as st
-from components.dashboard.dashboard import Dashboard
-from components.datatable.datatable import Datatable
+from dashboard import Dashboard
+from datatable import Datatable
 from streamlit_option_menu import option_menu
 
 #sidebar
