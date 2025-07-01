@@ -25,7 +25,7 @@ def inputButton(disabled_farm, disabled_house, disabled_mfg, disabled_eggs):
         house = st.selectbox("House", [""] + list(map(str, range(1, 17))), disabled=disabled_house, key="house_dashboard")
 
     with input3:
-        mfg_date = st.date_input("Manufacturing Date", date.today(), disabled=disabled_mfg, key="mfg_dashboard")
+        mfg_date = st.date_input("Manufacturing Date", disabled=disabled_mfg, key="mfg_dashboard")
 
     with input4:
         tray_amount = st.number_input(
