@@ -5,9 +5,10 @@ from sqlalchemy import create_engine
 
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "1234"
-MYSQL_HOST = "localhost:3306"
+MYSQL_HOST = "localhost"
+MYSQL_PORT = "3306"
 MYSQL_DB = "egg"
-engine = create_engine(f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}")
+engine = create_engine(f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}")
 
 #Data table page
 def Datatable():
@@ -18,7 +19,7 @@ def Datatable():
 
 
 
-    # Read data from MySQL
+    # Read data from MySQL with error handling
     query = '''
         SELECT 
             s.date AS Date,
@@ -40,14 +41,23 @@ def Datatable():
             AND s.house = t.session_house
             AND s.mfg = t.session_mfg
     '''
-    df = pd.read_sql(query, engine)
 
-    # Convert date columns to datetime
-    df["Date"] = pd.to_datetime(df["Date"])
-    df["Manufacturing Date"] = pd.to_datetime(df["Manufacturing Date"])
-
-    # Convert House to string for filtering
-    df["House"] = df["House"].astype(str)
+    try:
+        df = pd.read_sql(query, engine)
+        # Convert date columns to datetime
+        df["Date"] = pd.to_datetime(df["Date"])
+        df["Manufacturing Date"] = pd.to_datetime(df["Manufacturing Date"])
+        # Convert House to string for filtering
+        df["House"] = df["House"].astype(str)
+    except Exception as e:
+        # If error, show only the column headers (expected columns)
+        columns = [
+            "Date", "Farm", "House", "Manufacturing Date",
+            "Egg Amount", "Dirty Eggs %", "Tray Number"
+        ]
+        st.info("Could not load data from database. Displaying column headers only.")
+        st.dataframe(pd.DataFrame(columns=columns), use_container_width=True)
+        return
 
     #filter function
     date_to, date_from, mfg_from, mfg_to, farm_filter, house_filter, clear_filter, date_filter, mfg_filter = filter()
@@ -89,8 +99,13 @@ def Datatable():
     filtered_df["Date"] = filtered_df["Date"].dt.strftime('%Y-%m-%d')
     filtered_df["Manufacturing Date"] = filtered_df["Manufacturing Date"].dt.strftime('%Y-%m-%d')
 
-    #show table
-    st.dataframe(filtered_df, use_container_width=True)
+
+    # Show table: if no data, show only column headers
+    if filtered_df.empty:
+        st.info("No data found for the selected filters. Displaying column headers only.")
+        st.dataframe(pd.DataFrame(columns=filtered_df.columns), use_container_width=True)
+    else:
+        st.dataframe(filtered_df, use_container_width=True)
 
     # --- CSV Export ---
     leftdummy, left_col = st.columns([17, 2])

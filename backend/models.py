@@ -8,10 +8,10 @@ from database import Base
 class Session(Base):
     __tablename__ = 'session'
     session_id = Column(Integer, primary_key=True, autoincrement=True)
-    date = Column(DateTime, primary_key=True, nullable=False)
-    farm = Column(String(45), primary_key=True, nullable=False)
-    house = Column(String(45), primary_key=True, nullable=False)
-    mfg = Column(Date, primary_key=True, nullable=False)
+    date = Column(DateTime, nullable=False)
+    farm = Column(String(45), nullable=False)
+    house = Column(String(45), nullable=False)
+    mfg = Column(Date, nullable=False)
     tray_amount = Column(Integer, nullable=False)
 
     trays = relationship("Tray", back_populates="session")
@@ -34,8 +34,8 @@ class Tray(Base):
 
     __table_args__ = (
         ForeignKeyConstraint(
-            ['session_session_id', 'session_date', 'session_farm', 'session_house', 'session_mfg'],
-            ['session.session_id', 'session.date', 'session.farm', 'session.house', 'session.mfg']
+            ['session_session_id'],
+            ['session.session_id']
         ),
     )
 
