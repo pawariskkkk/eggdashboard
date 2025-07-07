@@ -1,6 +1,7 @@
 import streamlit as st
-from datetime import date
+from datetime import datetime
 from utils import createContainerWithColor, farmSelectbox
+import requests
 
 #to make real time update for metric component
 def updateGoals():
@@ -19,14 +20,13 @@ def inputButton(disabled_farm, disabled_house, disabled_mfg, disabled_eggs):
     input1, input2, input3, input4 = st.columns(4)
     with input1:
         farm = farmSelectbox(input1, disabled_farm, "farm_dashboard")
-
+        st.session_state["farm_dashboard_save"] = farm
     with input2:
-        
         house = st.selectbox("House", [""] + list(map(str, range(1, 17))), disabled=disabled_house, key="house_dashboard")
-
+        st.session_state["house_dashboard_save"] = house
     with input3:
         mfg_date = st.date_input("Manufacturing Date", disabled=disabled_mfg, key="mfg_dashboard")
-
+        st.session_state["mfg_dashboard_save"] = mfg_date
     with input4:
         tray_amount = st.number_input(
             "Trays Amount",
@@ -36,6 +36,7 @@ def inputButton(disabled_farm, disabled_house, disabled_mfg, disabled_eggs):
             on_change=updateGoals,
             disabled=disabled_eggs
         )
+        st.session_state["tray_amount_dashboard_save"] = tray_amount
             
     return farm, house, mfg_date, tray_amount
 
@@ -60,6 +61,9 @@ def controlPanel():
     
     # --- Input Section (above buttons) ---
 
+    if "starttime" not in st.session_state:
+        st.session_state.starttime = None
+
     inputty = createContainerWithColor("inputty", "#151717" , 1)
     with inputty:
         st.subheader("Production Controls")
@@ -77,14 +81,31 @@ def controlPanel():
 
         with ctrl1:
             if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
+                # Prepare data for API
+                data = {
+                    "date": datetime.now().isoformat(),
+                    "farm": farm,
+                    "house": house,
+                    "mfg": mfg_date.isoformat(),
+                    "tray_amount": tray_amount
+                }
+                try:
+                    response = requests.post("http://localhost:8000/session/", json=data)
+                    response.raise_for_status()
+                    session_id = response.json()["session_id"]
+                    st.session_state["session_id"] = session_id
+                except Exception as e:
+                    st.error(f"Failed to create session: {e}")
+                    st.stop()
                 inputDisable()
                 st.session_state.started = True
                 st.session_state["show_success"] = True
                 st.session_state["show_stopped"] = False
+                st.session_state.starttime = datetime.now()
                 st.rerun()
-    
+
             if st.session_state.get("show_success"):
-                    st.success("Production Started")
+                st.success("Production Started")
         with ctrl2:
             if st.button("⏹ Stop", use_container_width=True):
                 st.session_state.started = False
@@ -102,10 +123,12 @@ def controlPanel():
                     st.session_state["show_stopped"] = False
                     st.rerun()
                     
+    starttime = st.session_state.starttime
     st.sidebar.subheader("Current Session")
     st.sidebar.markdown(f"""
+        - **StartAt:** `{starttime.date() if starttime else "not defined"}`
         - **Farm:** `{farm if farm else "not defined"}`  
         - **House:** `{house if house else "not defined"}`  
         - **MFG:** `{mfg_date}` 
-        - **Tray amount:** `{tray_amount}`
+        - **TrayAmount:** `{tray_amount}`
         """)

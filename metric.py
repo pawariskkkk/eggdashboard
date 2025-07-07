@@ -1,5 +1,6 @@
 import streamlit as st
 from utils import createContainerWithColor
+from fetch import get_session_summary
 
 #each metric component
 def metric(name, top, down, label, pic, head):
@@ -32,20 +33,24 @@ def fourcolumnsMetric():
     if "egg_goal" not in st.session_state:
         st.session_state.egg_goal = 150 * 42
     
-    # Sample values
+    # Fetch session summary if session_id exists
     trays_processed = 0
-    good_eggs = 1
-    dirty_eggs = 359
+    good_eggs = 0
+    dirty_eggs = 0
+    if "session_id" in st.session_state:
+        summary = get_session_summary(st.session_state["session_id"])
+        trays_processed = summary["tray_count"]
+        good_eggs = summary["good_egg"]
+        dirty_eggs = summary["dirty_egg"]
     dirty_expected = 500
     reject_target = 5.0
-    
+
     # --- Metrics with progress ---
     col1, col2, col3, col4 = st.columns(4)
 
     trays_goal = st.session_state.trays_goal
     egg_goal = st.session_state.egg_goal
-    reject_rate = round((dirty_eggs*100)/egg_goal, 1)
-
+    reject_rate = round((dirty_eggs*100)/egg_goal, 1) if egg_goal else 0
     with col1:
         metric("mt1", trays_processed, trays_goal, f"{trays_processed}/{trays_goal}", "layers.png", "Trays Processed")
 
@@ -53,9 +58,9 @@ def fourcolumnsMetric():
         metric("mt2", good_eggs, egg_goal, f"{good_eggs}/{egg_goal}", "eggs.png", "Good Eggs")
 
     with col3:
-        metric("mt3", dirty_eggs, dirty_expected, f"{dirty_eggs}/{dirty_expected}", "no.png", "Dirty Eggs")
+        metric("mt3", dirty_eggs, dirty_expected, f"{dirty_eggs}", "no.png", "Dirty Eggs")
 
     with col4:
-        metric("mt4", reject_rate, reject_target, f"{reject_rate}%/{reject_target}%", "pie-chart.png", "Rejection Rate")
+        metric("mt4", reject_rate, reject_target, f"{reject_rate}%", "pie-chart.png", "Rejection Rate")
             
     return good_eggs, dirty_eggs

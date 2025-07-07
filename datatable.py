@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 from filter import filter
+from sqlalchemy import create_engine
 
-#to save session between page for input
-def secondSessionSave(name):
-    st.session_state["%s_save" %name] = st.session_state[name]
+MYSQL_USER = "root"
+MYSQL_PASSWORD = "1234"
+MYSQL_HOST = "localhost:3306"
+MYSQL_DB = "egg"
+engine = create_engine(f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}")
 
 #Data table page
 def Datatable():
@@ -13,14 +16,31 @@ def Datatable():
     st.set_page_config(layout="wide")
     st.title("📄 Data Table")
 
-    secondSessionSave("tray_amount_dashboard")
-    secondSessionSave("farm_dashboard")
-    secondSessionSave("house_dashboard")
-    secondSessionSave("mfg_dashboard")
 
-    # Sample Data
-    df = pd.read_excel("data1.xlsx", sheet_name="mock_egg_data")
-    df.columns = ["Date", "Farm", "House", "Manufacturing Date", "Egg Amount", "Dirty Eggs %", "Tray Number"]
+
+    # Read data from MySQL
+    query = '''
+        SELECT 
+            s.date AS Date,
+            s.farm AS Farm,
+            s.house AS House,
+            s.mfg AS `Manufacturing Date`,
+            (COALESCE(t.good_egg,0) + COALESCE(t.dirty_egg,0)) AS `Egg Amount`,
+            CASE 
+                WHEN (COALESCE(t.good_egg,0) + COALESCE(t.dirty_egg,0)) > 0 THEN 
+                    ROUND(COALESCE(t.dirty_egg,0) * 100.0 / (COALESCE(t.good_egg,0) + COALESCE(t.dirty_egg,0)), 2)
+                ELSE 0
+            END AS `Dirty Eggs %`,
+            t.tray_id AS `Tray Number`
+        FROM session s
+        LEFT JOIN tray t
+            ON s.session_id = t.session_session_id
+            AND s.date = t.session_date
+            AND s.farm = t.session_farm
+            AND s.house = t.session_house
+            AND s.mfg = t.session_mfg
+    '''
+    df = pd.read_sql(query, engine)
 
     # Convert date columns to datetime
     df["Date"] = pd.to_datetime(df["Date"])
