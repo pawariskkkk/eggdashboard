@@ -20,27 +20,23 @@ def Datatable():
 
 
     # Read data from MySQL with error handling
-    query = '''
+    query = """
         SELECT 
             s.date AS Date,
             s.farm AS Farm,
             s.house AS House,
-            s.mfg AS `Manufacturing Date`,
-            (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) AS `Egg Amount`,
+            s.mfg AS "Manufacturing Date",
+            (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) AS "Egg Amount",
             CASE 
                 WHEN (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) > 0 THEN 
                     ROUND(COALESCE(r.dirty_egg,0) * 100.0 / (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)), 2)
                 ELSE 0
-            END AS `Dirty Eggs %`,
-            r.tray_id AS `Tray Number`
+            END AS "Dirty Eggs %%",
+            r.tray_id AS "Tray Number"
         FROM session s
         LEFT JOIN real_time r
             ON s.session_id = r.session_session_id
-            AND s.date = r.session_date
-            AND s.farm = r.session_farm
-            AND s.house = r.session_house
-            AND s.mfg = r.session_mfg
-    '''
+    """
 
     try:
         df = pd.read_sql(query, engine)
@@ -102,7 +98,7 @@ def Datatable():
 
     # Show table: if no data, show only column headers
     if filtered_df.empty:
-        st.info("No data found for the selected filters. Displaying column headers only.")
+        st.info("No data found for the selected filters.")
         st.dataframe(pd.DataFrame(columns=filtered_df.columns), use_container_width=True)
     else:
         st.dataframe(filtered_df, use_container_width=True)
