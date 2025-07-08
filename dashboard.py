@@ -1,4 +1,3 @@
-
 import streamlit as st
 from utils import createContainerWithColor
 from chart import renderPiechart

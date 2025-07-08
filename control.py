@@ -63,6 +63,8 @@ def controlPanel():
 
     if "starttime" not in st.session_state:
         st.session_state.starttime = None
+    if "session_id" not in st.session_state:
+        st.session_state.session_id = None
 
     inputty = createContainerWithColor("inputty", "#151717" , 1)
     with inputty:
@@ -81,27 +83,29 @@ def controlPanel():
 
         with ctrl1:
             if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
-                # Prepare data for API
-                data = {
-                    "date": datetime.now().isoformat(),
-                    "farm": farm,
-                    "house": house,
-                    "mfg": mfg_date.isoformat(),
-                    "tray_amount": tray_amount
-                }
-                try:
-                    response = requests.post("http://localhost:8000/session/", json=data)
-                    response.raise_for_status()
-                    session_id = response.json()["session_id"]
-                    st.session_state["session_id"] = session_id
-                except Exception as e:
-                    st.error(f"Failed to create session: {e}")
-                    st.stop()
+                if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
+                    # Prepare data for API
+                    data = {
+                        "date": datetime.now().isoformat(),
+                        "farm": farm,
+                        "house": house,
+                        "mfg": mfg_date.isoformat(),
+                        "tray_amount": tray_amount
+                    }
+                    try:
+                        response = requests.post("http://localhost:8000/session/", json=data)
+                        response.raise_for_status()
+                        session_id = response.json()["session_id"]
+                        st.session_state["session_id"] = session_id
+                    except Exception as e:
+                        st.error(f"Failed to create session: {e}")
+                        st.stop()
+                    st.session_state.starttime = datetime.now()
+                    
                 inputDisable()
                 st.session_state.started = True
                 st.session_state["show_success"] = True
                 st.session_state["show_stopped"] = False
-                st.session_state.starttime = datetime.now()
                 st.rerun()
 
             if st.session_state.get("show_success"):
@@ -111,6 +115,7 @@ def controlPanel():
                 st.session_state.started = False
                 st.session_state["show_stopped"] = True
                 st.session_state["show_success"] = False
+                st.session_state["have_stopped"] = True
                 st.rerun()
 
             if st.session_state.get("show_stopped"):
@@ -121,11 +126,14 @@ def controlPanel():
                     inputDisable(False)
                     st.session_state["show_success"] = False
                     st.session_state["show_stopped"] = False
+                    st.session_state["have_stopped"] = False
                     st.rerun()
                     
     starttime = st.session_state.starttime
+    session_id = st.session_state.session_id
     st.sidebar.subheader("Current Session")
     st.sidebar.markdown(f"""
+        - **Session_id:** `{session_id if session_id else "not defined"}`
         - **StartAt:** `{starttime.date() if starttime else "not defined"}`
         - **Farm:** `{farm if farm else "not defined"}`  
         - **House:** `{house if house else "not defined"}`  

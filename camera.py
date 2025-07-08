@@ -1,5 +1,15 @@
 import streamlit as st
 from fetch import get_session_summary
+import requests
+
+#check image url
+def is_image_url(url):
+    try:
+        response = requests.head(url, timeout=2, allow_redirects=True)
+        content_type = response.headers.get("Content-Type", "")
+        return response.status_code == 200 and content_type.startswith("image/")
+    except:
+        return False
 
 # get camera status from API summary
 def cameraStatus(status):
@@ -29,14 +39,15 @@ def cameraFeed():
     with subh2:
         sepcam1, sepcam2 = st.columns([1,3])
         sepcam2.write(f"{cameraStatus(cam1_status)} camera1 {cameraStatus(cam2_status)} camera2")
+    
     fcam1, fcam2 = st.columns(2)
     with fcam1:
-        if cam1_image:
+        if cam1_image and is_image_url(cam1_image):
             st.image(cam1_image, width=520)
         else:
             st.image("assets/camnotavailable.jpg", width=520)
     with fcam2:
-        if cam2_image:
+        if cam2_image and is_image_url(cam2_image):
             st.image(cam2_image, width=520)
         else:
             st.image("assets/camnotavailable.jpg", width=520)

@@ -26,20 +26,20 @@ def Datatable():
             s.farm AS Farm,
             s.house AS House,
             s.mfg AS `Manufacturing Date`,
-            (COALESCE(t.good_egg,0) + COALESCE(t.dirty_egg,0)) AS `Egg Amount`,
+            (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) AS `Egg Amount`,
             CASE 
-                WHEN (COALESCE(t.good_egg,0) + COALESCE(t.dirty_egg,0)) > 0 THEN 
-                    ROUND(COALESCE(t.dirty_egg,0) * 100.0 / (COALESCE(t.good_egg,0) + COALESCE(t.dirty_egg,0)), 2)
+                WHEN (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) > 0 THEN 
+                    ROUND(COALESCE(r.dirty_egg,0) * 100.0 / (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)), 2)
                 ELSE 0
             END AS `Dirty Eggs %`,
-            t.tray_id AS `Tray Number`
+            r.tray_id AS `Tray Number`
         FROM session s
-        LEFT JOIN tray t
-            ON s.session_id = t.session_session_id
-            AND s.date = t.session_date
-            AND s.farm = t.session_farm
-            AND s.house = t.session_house
-            AND s.mfg = t.session_mfg
+        LEFT JOIN real_time r
+            ON s.session_id = r.session_session_id
+            AND s.date = r.session_date
+            AND s.farm = r.session_farm
+            AND s.house = r.session_house
+            AND s.mfg = r.session_mfg
     '''
 
     try:

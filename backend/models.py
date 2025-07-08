@@ -14,11 +14,11 @@ class Session(Base):
     mfg = Column(Date, nullable=False)
     tray_amount = Column(Integer, nullable=False)
 
-    trays = relationship("Tray", back_populates="session")
+    realtime = relationship("Real_time", back_populates="session")
 
 
-class Tray(Base):
-    __tablename__ = 'tray'
+class Real_time(Base):
+    __tablename__ = 'real_time'
     tray_id = Column(Integer, primary_key=True)
     session_session_id = Column(Integer, primary_key=True)
     session_date = Column(DateTime, nullable=False)
@@ -39,4 +39,4 @@ class Tray(Base):
         ),
     )
 
-    session = relationship("Session", back_populates="trays")
+    session = relationship("Session", back_populates="realtime")
