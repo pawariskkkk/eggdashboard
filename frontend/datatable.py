@@ -2,13 +2,9 @@ import streamlit as st
 import pandas as pd
 from filter import filter
 from sqlalchemy import create_engine
+import os
 
-MYSQL_USER = "root"
-MYSQL_PASSWORD = "1234"
-MYSQL_HOST = "localhost"
-MYSQL_PORT = "3306"
-MYSQL_DB = "egg"
-engine = create_engine(f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}")
+engine = create_engine(os.getenv("DATABASE_URL"))
 
 #Data table page
 def Datatable():
