@@ -5,6 +5,16 @@ from camera import cameraFeed
 from control import controlPanel
 from metric import fourcolumnsMetric
 import os
+import time
+
+# Poll the flag file for 5 seconds max
+def check_for_trigger(max_wait=5):
+    start = time.time()
+    while time.time() - start < max_wait:
+        if os.path.exists("/shared/ping.flag"):
+            os.remove("/shared/ping.flag")
+            st.rerun()
+        time.sleep(1)
 
 def show_camera_and_piechart():
     """Helper to display camera feed and pie chart side by side."""
@@ -32,9 +42,8 @@ def show_camera_and_piechart():
                 st.error(f"Pie chart error: {e}")
 
 def Dashboard():
-    if os.path.exists("/shared/ping.flag"):
-        os.remove("/shared/ping.flag")
-        st.rerun()
+    check_for_trigger()
+    
     """Main dashboard entry point."""
     st.title("Real-time Monitoring")
     # Defensive: check if 'started' exists in session_state

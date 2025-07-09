@@ -3,15 +3,14 @@ import pandas as pd
 from filter import filter
 from sqlalchemy import create_engine
 from metric import firstSessionSave
+from dashboard import check_for_trigger
 import os
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 
 #Data table page
 def Datatable():
-    if os.path.exists("/shared/ping.flag"):
-        os.remove("/shared/ping.flag")
-        st.rerun()
+    check_for_trigger()
 
     # Layout
     st.set_page_config(layout="wide")
