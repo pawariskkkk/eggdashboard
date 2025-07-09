@@ -2,19 +2,30 @@ import streamlit as st
 import pandas as pd
 from filter import filter
 from sqlalchemy import create_engine
+from metric import firstSessionSave
 import os
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 
 #Data table page
 def Datatable():
-   
+    if os.path.exists("/shared/ping.flag"):
+        os.remove("/shared/ping.flag")
+        st.rerun()
+
     # Layout
     st.set_page_config(layout="wide")
     st.title("📄 Data Table")
 
-
-
+    firstSessionSave("date_selectbox_table")
+    firstSessionSave("date_from_table")
+    firstSessionSave("date_to_table")
+    firstSessionSave("mfg_selectbox_table")
+    firstSessionSave("mfg_from_table")
+    firstSessionSave("mfg_to_table")
+    firstSessionSave("farm_filter_table")
+    firstSessionSave("house_table")
+    
     # Read data from MySQL with error handling
     query = """
         SELECT 

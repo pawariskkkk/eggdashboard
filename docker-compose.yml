@@ -24,6 +24,8 @@ services:
       - mysql
     environment:
       - DATABASE_URL=mysql+pymysql://root:1234@mysql:3306/egg
+    volumes:
+      - shared_data:/shared
 
   frontend:
     build:
@@ -36,6 +38,9 @@ services:
       - backend
     environment:
       - DATABASE_URL=mysql+pymysql://root:1234@mysql:3306/egg
+    volumes:
+      - shared_data:/shared
 
 volumes:
   mysql_data:
+  shared_data:

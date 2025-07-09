@@ -4,6 +4,7 @@ from chart import renderPiechart
 from camera import cameraFeed
 from control import controlPanel
 from metric import fourcolumnsMetric
+import os
 
 def show_camera_and_piechart():
     """Helper to display camera feed and pie chart side by side."""
@@ -30,19 +31,12 @@ def show_camera_and_piechart():
             except Exception as e:
                 st.error(f"Pie chart error: {e}")
 
-#realtime part of dashboard
-@st.fragment(run_every="7s")
-def realTimePart():
-    """Fragment that updates the camera and pie chart every 7 seconds."""
-    show_camera_and_piechart()
-
 def Dashboard():
+    if os.path.exists("/shared/ping.flag"):
+        os.remove("/shared/ping.flag")
+        st.rerun()
     """Main dashboard entry point."""
     st.title("Real-time Monitoring")
     # Defensive: check if 'started' exists in session_state
-    started = st.session_state.get('started', False)
-    if started:
-        realTimePart()
-    else:
-        show_camera_and_piechart()
+    show_camera_and_piechart()
     controlPanel()

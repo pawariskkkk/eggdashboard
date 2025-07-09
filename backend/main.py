@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from pydantic import BaseModel
-from typing import List, Annotated
+from typing import Annotated
 from sqlalchemy.orm import Session
 import models
 from database import engine, SessionLocal
@@ -139,6 +139,9 @@ async def create_real_time(data: RealTimeCreate, db: Session = Depends(get_db)):
     db.add(new_tray)
     db.commit()
     db.refresh(new_tray)
+    with open("/shared/ping.flag", "w") as f:
+        f.write("1")
+    
     return {
         "tray_id": new_tray.tray_id,
         "session_session_id": new_tray.session_session_id,
