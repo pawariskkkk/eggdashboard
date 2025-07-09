@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://egg_backend:8000" #"http://localhost:8000"
 
 def get_session_summary(session_id):
     """
