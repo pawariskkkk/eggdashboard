@@ -93,7 +93,7 @@ def controlPanel():
                         "tray_amount": tray_amount
                     }
                     try:
-                        response = requests.post("http://localhost:8000/session/", json=data)
+                        response = requests.post("http://egg_backend:8000/session/", json=data)
                         response.raise_for_status()
                         session_id = response.json()["session_id"]
                         st.session_state["session_id"] = session_id
