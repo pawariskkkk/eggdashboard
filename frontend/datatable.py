@@ -32,6 +32,7 @@ def Datatable():
         FROM session s
         LEFT JOIN real_time r
             ON s.session_id = r.session_session_id
+        WHERE r.tray_id IS NOT NULL
     """
 
     try:
