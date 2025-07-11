@@ -129,6 +129,7 @@ def controlPanel():
             if not st.session_state.started and st.session_state.stopped:
                 if st.button("🔄 Reset", use_container_width=True):
                     inputDisable(False)
+                    st.session_state.stopped = False
                     st.session_state["show_success"] = False
                     st.session_state["show_stopped"] = False
                     st.session_state["have_stopped"] = False
