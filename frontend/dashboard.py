@@ -6,9 +6,9 @@ from control import controlPanel
 from metric import fourcolumnsMetric
 import os
 
-# Poll the flag file for 5 seconds max
-@st.fragment(run_every=5)
-def check_for_trigger(max_wait=5):
+# Poll the flag file for every 3 seconds
+@st.fragment(run_every=3)
+def check_for_trigger():
     if os.path.exists("/shared/ping.flag"):
             os.remove("/shared/ping.flag")
             st.rerun()

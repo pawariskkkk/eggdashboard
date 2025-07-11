@@ -111,12 +111,13 @@ def controlPanel():
             if st.session_state.get("show_success"):
                 st.success("Production Started")
         with ctrl2:
-            if st.button("⏹ Stop", use_container_width=True):
-                st.session_state.started = False
-                st.session_state["show_stopped"] = True
-                st.session_state["show_success"] = False
-                st.session_state["have_stopped"] = True
-                st.rerun()
+            if not st.session_state.started:
+                if st.button("⏹ Stop", use_container_width=True):
+                    st.session_state.started = False
+                    st.session_state["show_stopped"] = True
+                    st.session_state["show_success"] = False
+                    st.session_state["have_stopped"] = True
+                    st.rerun()
 
             if st.session_state.get("show_stopped"):
                     st.warning("Production Stopped")
