@@ -22,7 +22,7 @@ def renderPiechart(good_eggs, dirty_eggs):
     # Layout adjustments
     fig.update_layout(
         showlegend=True,
-        height=420,
+        height=350,
         paper_bgcolor='rgba(0,0,0,0)',
         margin=dict(t=20, b=40),  # Leave space at bottom
         legend=dict(

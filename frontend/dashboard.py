@@ -20,7 +20,7 @@ def show_camera_and_piechart():
     except Exception as e:
         st.error(f"Error fetching metrics: {e}")
         good_eggs, dirty_eggs = 0, 0
-    mid1, mid2 = st.columns([3, 1])
+    mid1, mid2 = st.columns([9, 4])
     with mid1:
         camera = createContainerWithColor("camera", "#151717", 1)
         with camera:
