@@ -39,17 +39,15 @@ class SessionSummary(BaseModel):
     good_egg: int
     dirty_egg: int
     tray_count: int
-    cam1_status: Optional[bool]
-    cam2_status: Optional[bool]
+    cam_status: Optional[bool]
 
 class RealTimeCreate(BaseModel):
     session_session_id: int
     tray_number: int  # Number to increment tray_number by (usually 1)
     good_egg: int
     dirty_egg: int
-    cam1_status: Optional[bool] = None
-    cam2_status: Optional[bool] = None
-
+    cam_status: Optional[bool] = None
+    cam_id: int
 # ----------------------
 # API Routes
 # ----------------------
@@ -77,8 +75,8 @@ async def create_session(session: SessionCreate, db: Session = Depends(get_db)):
     }
 
 # Get session summary (good/dirty eggs, tray count, cam1/2 status/image from latest tray)
-@app.get("/session/{session_id}/summary", response_model=SessionSummary, status_code=status.HTTP_200_OK)
-async def get_session_summary(session_id: int, db: Session = Depends(get_db)):
+@app.get("/session/{session_id}/{cam_id}/summary", response_model=SessionSummary, status_code=status.HTTP_200_OK)
+async def get_session_summary(session_id: int, cam_id: int, db: Session = Depends(get_db)):
     session = db.query(models.Session).filter(models.Session.session_id == session_id).first()
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -87,15 +85,14 @@ async def get_session_summary(session_id: int, db: Session = Depends(get_db)):
     dirty_egg = sum([t.dirty_egg or 0 for t in trays])
     # tray_count is the highest tray_number for this session
     latest_tray = db.query(models.Real_time).filter(models.Real_time.session_session_id == session_id).order_by(models.Real_time.tray_number.desc()).first()
+    latest_cam = db.query(models.Real_time).filter(models.Real_time.session_session_id == session_id, models.Real_time.cam_id == cam_id).order_by(models.Real_time.tray_number.desc()).first()
     tray_count = latest_tray.tray_number if latest_tray else 0
-    cam1_status = latest_tray.cam1_status if latest_tray else None
-    cam2_status = latest_tray.cam2_status if latest_tray else None
+    cam_status = latest_cam.cam_status if latest_cam else None
     return SessionSummary(
         good_egg=good_egg,
         dirty_egg=dirty_egg,
         tray_count=tray_count,
-        cam1_status=cam1_status,
-        cam2_status=cam2_status,
+        cam_status=cam_status,
     )
 
 # ----------------------
@@ -123,8 +120,8 @@ async def create_real_time(data: RealTimeCreate, db: Session = Depends(get_db)):
         session_farm=session_obj.farm,
         session_house=session_obj.house,
         session_mfg=session_obj.mfg,
-        cam1_status=data.cam1_status,
-        cam2_status=data.cam2_status,
+        cam_status=data.cam_status,
+        cam_id=data.cam_id,
     )
     db.add(new_tray)
     db.commit()
@@ -141,6 +138,6 @@ async def create_real_time(data: RealTimeCreate, db: Session = Depends(get_db)):
         "session_farm": new_tray.session_farm,
         "session_house": new_tray.session_house,
         "session_mfg": new_tray.session_mfg,
-        "cam1_status": new_tray.cam1_status,
-        "cam2_status": new_tray.cam2_status,
+        "cam_status": new_tray.cam_status,
+        "cam_id": new_tray.cam_id,
     }

@@ -38,7 +38,7 @@ def fourcolumnsMetric():
     good_eggs = 0
     dirty_eggs = 0
     if "session_id" in st.session_state:
-        summary = get_session_summary(st.session_state["session_id"])
+        summary = get_session_summary(st.session_state["session_id"], 1)
         trays_processed = summary["tray_count"]
         good_eggs = summary["good_egg"]
         dirty_eggs = summary["dirty_egg"]

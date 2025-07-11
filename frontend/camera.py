@@ -1,6 +1,5 @@
 import streamlit as st
 from fetch import get_session_summary
-import requests
 
 # get camera status from API summary
 def cameraStatus(status):
@@ -18,9 +17,10 @@ def cameraFeed():
     cam1_image = "images/camera1.jpg"
     cam2_image = "images/camera2.jpg"
     if "session_id" in st.session_state:
-        summary = get_session_summary(st.session_state["session_id"])
-        cam1_status = summary["cam1_status"]
-        cam2_status = summary["cam2_status"]
+        summary1 = get_session_summary(st.session_state["session_id"],1)
+        summary2 = get_session_summary(st.session_state["session_id"],2)
+        cam1_status = summary1["cam_status"]
+        cam2_status = summary2["cam_status"]
 
     subh1, subh2 = st.columns([27, 10])
     with subh1:

@@ -27,8 +27,8 @@ class Real_time(Base):
     session_mfg = Column(Date, nullable=False)
     good_egg = Column(Integer, nullable=False)
     dirty_egg = Column(Integer, nullable=False)
-    cam1_status = Column(Boolean, nullable=True)
-    cam2_status = Column(Boolean, nullable=True)
+    cam_status = Column(Boolean, nullable=True)
+    cam_id = Column(Integer, nullable=False)
 
     __table_args__ = (
         ForeignKeyConstraint(
