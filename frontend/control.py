@@ -76,6 +76,9 @@ def controlPanel():
         if "started" not in st.session_state:
             st.session_state.started = False
 
+        if "stopped" not in st.session_state:
+            st.session_state.stopped = False
+
         ctrl1, ctrl2, ctrl3 = st.columns([1, 1, 1])
 
         # Disable Start if required fields are missing
@@ -83,6 +86,7 @@ def controlPanel():
 
         with ctrl1:
             if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
+                st.session_state.stopped = True
                 if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
                     # Prepare data for API
                     data = {
@@ -111,7 +115,7 @@ def controlPanel():
             if st.session_state.get("show_success"):
                 st.success("Production Started")
         with ctrl2:
-            if not st.session_state.started:
+            if st.session_state.stopped:
                 if st.button("⏹ Stop", use_container_width=True):
                     st.session_state.started = False
                     st.session_state["show_stopped"] = True
@@ -122,7 +126,7 @@ def controlPanel():
             if st.session_state.get("show_stopped"):
                     st.warning("Production Stopped")
         with ctrl3:
-            if not st.session_state.started:
+            if not st.session_state.started and st.session_state.stopped:
                 if st.button("🔄 Reset", use_container_width=True):
                     inputDisable(False)
                     st.session_state["show_success"] = False
