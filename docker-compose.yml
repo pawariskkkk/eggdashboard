@@ -27,6 +27,7 @@ services:
     volumes:
       - shared_data:/shared
       - ./backend:/app
+      - ./backend/wait-for-it.sh:/app/wait-for-it.sh:ro
 
   frontend:
     build:
@@ -42,6 +43,7 @@ services:
     volumes:
       - shared_data:/shared
       - ./frontend:/app
+      - ./frontend/wait-for-it.sh:/app/wait-for-it.sh:ro
 volumes:
   mysql_data:
   shared_data:
