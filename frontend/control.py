@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import date
 from utils import createContainerWithColor, farmSelectbox
 import requests
 
@@ -90,7 +90,7 @@ def controlPanel():
                 if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
                     # Prepare data for API
                     data = {
-                        "date": datetime.now().isoformat(),
+                        "date": date.today().isoformat(),
                         "farm": farm,
                         "house": house,
                         "mfg": mfg_date.isoformat(),
@@ -104,7 +104,7 @@ def controlPanel():
                     except Exception as e:
                         st.error(f"Failed to create session: {e}")
                         st.stop()
-                    st.session_state.starttime = datetime.now()
+                    st.session_state.starttime = date.today()
                     
                 inputDisable()
                 st.session_state.started = True
@@ -140,7 +140,7 @@ def controlPanel():
     st.sidebar.subheader("Current Session")
     st.sidebar.markdown(f"""
         - **Session_id:** `{session_id if session_id else "not defined"}`
-        - **StartAt:** `{starttime.date() if starttime else "not defined"}`
+        - **StartAt:** `{starttime.strftime('%Y-%m-%d') if starttime else "not defined"}`
         - **Farm:** `{farm if farm else "not defined"}`  
         - **House:** `{house if house else "not defined"}`  
         - **MFG:** `{mfg_date}` 

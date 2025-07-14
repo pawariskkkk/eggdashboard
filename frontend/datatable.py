@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from filter import filter
 from sqlalchemy import create_engine
-from metric import firstSessionSave
 from dashboard import check_for_trigger
 import os
 
@@ -16,14 +15,6 @@ def Datatable():
     st.set_page_config(layout="wide")
     st.title("📄 Data Table")
 
-    firstSessionSave("date_selectbox_table")
-    firstSessionSave("date_from_table")
-    firstSessionSave("date_to_table")
-    firstSessionSave("mfg_selectbox_table")
-    firstSessionSave("mfg_from_table")
-    firstSessionSave("mfg_to_table")
-    firstSessionSave("farm_filter_table")
-    firstSessionSave("house_table")
     
     # Read data from MySQL with error handling
     query = """
@@ -108,7 +99,8 @@ def Datatable():
         st.info("No data found for the selected filters.")
         st.dataframe(pd.DataFrame(columns=filtered_df.columns), use_container_width=True)
     else:
-        st.dataframe(filtered_df, use_container_width=True)
+        filtered_df = filtered_df.sort_index(ascending=False)
+        st.dataframe(filtered_df, use_container_width=True) 
 
     # --- CSV Export ---
     leftdummy, left_col = st.columns([17, 2])
@@ -129,3 +121,4 @@ def Datatable():
     - **Farm:** `{farm_filter if farm_filter else "All"}`  
     - **House:** `{house_filter if house_filter else "All"}`
     """)
+    st.sidebar.toggle("Real-Time table")

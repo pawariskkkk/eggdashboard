@@ -6,8 +6,8 @@ from control import controlPanel
 from metric import fourcolumnsMetric
 import os
 
-# Poll the flag file for every 3 seconds
-@st.fragment(run_every=3)
+# Poll the flag file for every 1 seconds
+@st.fragment(run_every=1)
 def check_for_trigger():
     if os.path.exists("/shared/ping.flag"):
             os.remove("/shared/ping.flag")
