@@ -4,6 +4,7 @@ from filter import filter
 from sqlalchemy import create_engine
 from dashboard import check_for_trigger
 import os
+from fetch import get_table_summary
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 
@@ -17,7 +18,24 @@ def Datatable():
 
     
     # Read data from MySQL with error handling
-    query = """
+    query1 = """
+        SELECT 
+            date AS Date,
+            farm AS Farm,
+            house AS House,
+            mfg AS "Manufacturing Date",
+            (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) AS "Egg Amount",
+            CASE 
+                WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
+                    ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
+                ELSE 0
+            END AS "Dirty Eggs %%",
+            tray_number AS "Tray Number"
+        FROM real_time
+        WHERE tray_number > 0
+    """
+
+    query2 = """
         SELECT 
             date AS Date,
             farm AS Farm,
@@ -33,9 +51,13 @@ def Datatable():
         FROM egg
         WHERE tray_number > 0
     """
-
+    on = st.sidebar.toggle("Real-Time table")
+    
     try:
-        df = pd.read_sql(query, engine)
+        if on:
+            df = pd.read_sql(query1, engine)
+        else:
+            df = pd.read_sql(query2, engine)
         # Convert date columns to datetime
         df["Date"] = pd.to_datetime(df["Date"])
         df["Manufacturing Date"] = pd.to_datetime(df["Manufacturing Date"])
@@ -119,4 +141,4 @@ def Datatable():
     - **Farm:** `{farm_filter if farm_filter else "All"}`  
     - **House:** `{house_filter if house_filter else "All"}`
     """)
-    st.sidebar.toggle("Real-Time table")
+    

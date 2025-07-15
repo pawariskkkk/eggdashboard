@@ -6,6 +6,7 @@ import models
 from database import engine, SessionLocal
 from datetime import datetime, date as date_type
 from typing import Optional
+from sqlalchemy.sql import text
 
 # Create tables in the database
 models.Base.metadata.create_all(bind=engine)
@@ -68,6 +69,44 @@ async def get_session_summary(cam_id: int, db: Session = Depends(get_db)):
         tray_count=tray_count,
         cam_status=cam_status,
     )
+    
+# Only allow these two tables
+ALLOWED_TABLES = {
+    "egg": "egg",
+    "real_time": "real_time"
+}
+
+@app.get("/table_summary/{table_name}")
+def get_table_summary(table_name: str, db: Session = Depends(get_db)):
+    if table_name not in ALLOWED_TABLES:
+        raise HTTPException(status_code=400, detail="Invalid table name")
+
+    selected_table = ALLOWED_TABLES[table_name]
+
+    # Write slightly different query if needed, or same one for both
+    query = text(f"""
+        SELECT 
+            date AS Date,
+            farm AS Farm,
+            house AS House,
+            mfg AS "Manufacturing Date",
+            (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) AS "Egg Amount",
+            CASE 
+                WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
+                    ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
+                ELSE 0
+            END AS "Dirty Eggs %",
+            tray_number AS "Tray Number"
+        FROM {selected_table}
+        WHERE tray_number > 0
+    """)
+
+    try:
+        result = db.execute(query).fetchall()
+        columns = result[0].keys() if result else []
+        return [dict(zip(columns, row)) for row in result]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Query failed: {e}")
 
 # ----------------------
 # API Route to Post Real_time (Tray) Data

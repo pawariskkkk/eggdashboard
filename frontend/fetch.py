@@ -20,3 +20,12 @@ def get_session_summary(cam_id):
             "cam_status": None,
         }
         
+def get_table_summary(table_name):
+    try:
+        response = requests.get(f"{BASE_URL}/table_summary/{table_name}")
+        response.raise_for_status()
+        return response.json()
+    except Exception:
+        st.warning(f"Failed to load data: {e}")
+        return []
+        
