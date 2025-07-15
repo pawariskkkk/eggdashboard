@@ -77,7 +77,7 @@ ALLOWED_TABLES = {
 }
 
 @app.get("/table_summary/{table_name}")
-def get_table_summary(table_name: str, db: Session = Depends(get_db)):
+async def get_table_summary(table_name: str, db: Session = Depends(get_db)):
     if table_name not in ALLOWED_TABLES:
         raise HTTPException(status_code=400, detail="Invalid table name")
 
@@ -172,7 +172,7 @@ async def create_real_time(data: RealTimeCreate, db: Session = Depends(get_db)):
     }
     
 @app.post("/finalize/", status_code=status.HTTP_201_CREATED)
-def finalize_realtime_session(db: Session = Depends(get_db)):
+async def finalize_realtime_session(db: Session = Depends(get_db)):
     # Step 1: Get all data from real_time table
     records = db.query(models.Real_time).all()
 
