@@ -8,6 +8,22 @@ from fetch import get_table_summary
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 
+def table(table_name):
+    try:
+        data = get_table_summary(table_name)  # this is already a list of dicts
+        df = pd.DataFrame(data)
+
+        # Convert columns
+        df["Date"] = pd.to_datetime(df["Date"])
+        df["Manufacturing Date"] = pd.to_datetime(df["Manufacturing Date"])
+        df["House"] = df["House"].astype(str)
+
+        return df
+
+    except Exception as e:
+        # Return None or empty DataFrame to handle outside
+        return None
+
 #Data table page
 def Datatable():
     check_for_trigger()
