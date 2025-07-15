@@ -19,21 +19,19 @@ def Datatable():
     # Read data from MySQL with error handling
     query = """
         SELECT 
-            s.date AS Date,
-            s.farm AS Farm,
-            s.house AS House,
-            s.mfg AS "Manufacturing Date",
-            (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) AS "Egg Amount",
+            date AS Date,
+            farm AS Farm,
+            house AS House,
+            mfg AS "Manufacturing Date",
+            (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) AS "Egg Amount",
             CASE 
-                WHEN (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)) > 0 THEN 
-                    ROUND(COALESCE(r.dirty_egg,0) * 100.0 / (COALESCE(r.good_egg,0) + COALESCE(r.dirty_egg,0)), 2)
+                WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
+                    ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
                 ELSE 0
             END AS "Dirty Eggs %%",
-            r.tray_number AS "Tray Number"
-        FROM session s
-        LEFT JOIN real_time r
-            ON s.session_id = r.session_session_id
-        WHERE r.tray_number IS NOT NULL
+            tray_number AS "Tray Number"
+        FROM egg
+        WHERE tray_number > 0
     """
 
     try:

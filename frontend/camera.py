@@ -9,18 +9,18 @@ def cameraStatus(status):
         return "🔴"
     else:
         return "⚪"
-
+ 
 # main camera component
 def cameraFeed():
     cam1_status = None
     cam2_status = None
     cam1_image = "images/camera1.jpg"
     cam2_image = "images/camera2.jpg"
-    if "session_id" in st.session_state:
-        summary1 = get_session_summary(st.session_state["session_id"],1)
-        summary2 = get_session_summary(st.session_state["session_id"],2)
-        cam1_status = summary1["cam_status"]
-        cam2_status = summary2["cam_status"]
+    
+    summary1 = get_session_summary(1)
+    summary2 = get_session_summary(2)
+    cam1_status = summary1["cam_status"]
+    cam2_status = summary2["cam_status"]
 
     subh1, subh2 = st.columns([27, 10])
     with subh1:

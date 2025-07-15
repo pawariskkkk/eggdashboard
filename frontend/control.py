@@ -63,8 +63,6 @@ def controlPanel():
 
     if "starttime" not in st.session_state:
         st.session_state.starttime = None
-    if "session_id" not in st.session_state:
-        st.session_state.session_id = None
 
     inputty = createContainerWithColor("inputty", "#151717" , 1)
     with inputty:
@@ -97,10 +95,8 @@ def controlPanel():
                         "tray_amount": tray_amount
                     }
                     try:
-                        response = requests.post("http://egg_backend:8000/session/", json=data)
+                        response = requests.post("http://egg_backend:8000/firsttime/", json=data)
                         response.raise_for_status()
-                        session_id = response.json()["session_id"]
-                        st.session_state["session_id"] = session_id
                     except Exception as e:
                         st.error(f"Failed to create session: {e}")
                         st.stop()
@@ -133,16 +129,22 @@ def controlPanel():
                     st.session_state["show_success"] = False
                     st.session_state["show_stopped"] = False
                     st.session_state["have_stopped"] = False
+                    try:
+                        response = requests.post("http://egg_backend:8000/finalize/")
+                        response.raise_for_status()
+                    except Exception as e:
+                        st.error(f"Failed to create finalize: {e}")
+                        st.stop()
+                    
                     st.rerun()
                     
     starttime = st.session_state.starttime
-    session_id = st.session_state.session_id
     st.sidebar.subheader("Current Session")
     st.sidebar.markdown(f"""
-        - **Session_id:** `{session_id if session_id else "not defined"}`
         - **StartAt:** `{starttime.strftime('%Y-%m-%d') if starttime else "not defined"}`
         - **Farm:** `{farm if farm else "not defined"}`  
         - **House:** `{house if house else "not defined"}`  
         - **MFG:** `{mfg_date}` 
         - **TrayAmount:** `{tray_amount}`
         """)
+    

@@ -33,15 +33,14 @@ def fourcolumnsMetric():
     if "egg_goal" not in st.session_state:
         st.session_state.egg_goal = 150 * 42
     
-    # Fetch session summary if session_id exists
+    # Fetch session summary
     trays_processed = 0
     good_eggs = 0
     dirty_eggs = 0
-    if "session_id" in st.session_state:
-        summary = get_session_summary(st.session_state["session_id"], 1)
-        trays_processed = summary["tray_count"]
-        good_eggs = summary["good_egg"]
-        dirty_eggs = summary["dirty_egg"]
+    summary = get_session_summary(1)
+    trays_processed = summary["tray_count"]
+    good_eggs = summary["good_egg"]
+    dirty_eggs = summary["dirty_egg"]
     dirty_expected = 500
     reject_target = 5.0
 
