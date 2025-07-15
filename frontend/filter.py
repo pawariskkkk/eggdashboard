@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import date
 from datetime import date, timedelta
-from utils import farmSelectbox
+from utils import farmSelectbox, houseSelectbox
 
 #last week and last month function
 def shortcutDate(label="lastweek"):
@@ -49,7 +49,7 @@ def filter():
     with c3:
         filter1, filter2 = st.columns(2)
         farm_filter = farmSelectbox(filter1, False, "farm_filter_table")
-        house_filter = filter2.selectbox("House", [""] + [str(i) for i in range(1, 17)], key="house_table")
+        house_filter = houseSelectbox(filter2, False, "house_table")
 
     # --- Filter Buttons ---
     b1, b2, *_, b11 = st.columns(11)

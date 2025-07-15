@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import date
-from utils import createContainerWithColor, farmSelectbox
+from utils import createContainerWithColor, farmSelectbox, houseSelectbox
 import requests
 
 #to make real time update for metric component
@@ -22,7 +22,7 @@ def inputButton(disabled_farm, disabled_house, disabled_mfg, disabled_eggs):
         farm = farmSelectbox(input1, disabled_farm, "farm_dashboard")
         st.session_state["farm_dashboard_save"] = farm
     with input2:
-        house = st.selectbox("House", [""] + list(map(str, range(1, 17))), disabled=disabled_house, key="house_dashboard")
+        house = houseSelectbox(input2, disabled_house, "house_dashboard")
         st.session_state["house_dashboard_save"] = house
     with input3:
         mfg_date = st.date_input("Manufacturing Date", disabled=disabled_mfg, key="mfg_dashboard")

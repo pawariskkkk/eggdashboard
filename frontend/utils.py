@@ -34,3 +34,7 @@ def createContainerWithColor(id, color="#151717", gap=0):
 def farmSelectbox(container, disable=False, keys=""):
     farm_list = ["KK1", "SRK", "KK3", "LTK1", "LTK2", "LTK3", "KDF", "STD", "PSW", "BRG"]
     return container.selectbox("Farm", [""] + farm_list, disabled=disable, key=keys)
+
+def houseSelectbox(container, disable=False, keys=""):
+    house_list = [""] + list(map(str, range(1, 17)))
+    return container.selectbox("House", house_list, disabled=disable, key=keys)
