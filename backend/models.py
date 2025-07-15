@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Boolean, Column, Integer, String, Date, DateTime, ForeignKeyConstraint, BigInteger
+    Boolean, Column, Integer, String, Date, BigInteger
 )
 from database import Base
 
@@ -9,7 +9,7 @@ class Egg(Base):
     
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     tray_number = Column(Integer)
-    date = Column(DateTime, nullable=False)
+    date = Column(Date, nullable=False)
     farm = Column(String(45), nullable=True)
     house = Column(String(45), nullable=True)
     mfg = Column(Date, nullable=False)
@@ -24,7 +24,7 @@ class Real_time(Base):
     
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     tray_number = Column(Integer)
-    date = Column(DateTime, nullable=False)
+    date = Column(Date, nullable=False)
     farm = Column(String(45), nullable=True)
     house = Column(String(45), nullable=True)
     mfg = Column(Date, nullable=False)
