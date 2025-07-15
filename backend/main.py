@@ -156,6 +156,7 @@ async def create_real_time(data: RealTimeCreate, db: Session = Depends(get_db)):
     db.add(new_tray)
     db.commit()
     db.refresh(new_tray)
+    #to ping when post new data
     with open("/shared/ping.flag", "w") as f:
         f.write("1")
     
@@ -171,6 +172,7 @@ async def create_real_time(data: RealTimeCreate, db: Session = Depends(get_db)):
         "cam_id": new_tray.cam_id,
     }
     
+#add realtime table to egg table and delete realtime table after done
 @app.post("/finalize/", status_code=status.HTTP_201_CREATED)
 async def finalize_realtime_session(db: Session = Depends(get_db)):
     # Step 1: Get all data from real_time table
