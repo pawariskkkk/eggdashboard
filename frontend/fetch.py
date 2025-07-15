@@ -25,7 +25,7 @@ def get_table_summary(table_name):
         response = requests.get(f"{BASE_URL}/table_summary/{table_name}")
         response.raise_for_status()
         return response.json()
-    except Exception:
-        st.warning(f"Failed to load data")
+    except Exception as e:
+        st.warning(f"Failed to load data: {e}")
         return []
         
