@@ -4,16 +4,27 @@ To send images:
     send camera1 image to -> eggdashboard/frontend/images/camera1.jpg
     send camera2 image to -> eggdashboard/frontend/images/camera2.jpg
 
-To send real-time data:
-    with this api -> http://0.0.0.0:8000/docs#/default/create_real_time_real_time__post
+To post use postrealtime.py as template
 
-    Example Value:
-        Schema:
-        {
-            "session_session_id": 0,
-            "tray_number": 0,
-            "good_egg": 0,
-            "dirty_egg": 0,
-            "cam1_status": true,
-            "cam2_status": true
-        }
+frontend
+|-.streamlit: set auto rerun and theme
+|-asset: collect image
+|-images: get image from camera
+|-app.py: main app
+|-camera.py: camera components
+|-chart.py: chart components
+|-control.py: production control at the buttom of dashboard
+|-dashboard.py: contain chart, control and camera realtime dashboard page
+|-filter.py: contain filter that use for filter datatable
+|-datatable.py: contain datatable
+|-sidebar.py: sidebar of dashboard and datatable
+|-style.css: style sidebar and container
+|-utils.py: contain selectbox and function to style each container
+|-fetch.py: fetch data from api
+|-wait-for-it.sh: to make frontend start after backend
+
+backend
+|-database.py: to link with database mysql
+|-main.py: fastapi
+|-models.py: table models for database
+|-wait-for-it.sh: wait for mysql to start first
