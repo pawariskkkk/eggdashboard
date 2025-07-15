@@ -8,6 +8,7 @@ from fetch import get_table_summary
 
 engine = create_engine(os.getenv("DATABASE_URL"))
 
+#use with api
 def table(table_name):
     try:
         data = get_table_summary(table_name)  # this is already a list of dicts
@@ -33,7 +34,7 @@ def Datatable():
     st.title("📄 Data Table")
 
     
-    # Read data from MySQL with error handling
+    # Read data from MySQL database with error handling
     query1 = """
         SELECT 
             date AS Date,
