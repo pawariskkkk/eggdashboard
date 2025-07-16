@@ -7,3 +7,7 @@
 section[data-testid="stSidebar"] {
     width: 280px !important;      /* Adjust this width as needed */
 } 
+
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
