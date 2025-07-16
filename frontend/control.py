@@ -85,6 +85,7 @@ def controlPanel():
         with ctrl1:
             if not st.session_state.started:
                 if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
+                    requests.post("http://egg_backend:8000/toggle-api/", json={"enabled": True})
                     st.session_state.stopped = True
                     if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
                         # Prepare data for API
@@ -114,6 +115,7 @@ def controlPanel():
         with ctrl2:
             if st.session_state.stopped:
                 if st.button("⏹ Stop", use_container_width=True):
+                    requests.post("http://egg_backend:8000/toggle-api/", json={"enabled": False})
                     st.session_state.started = False
                     st.session_state["show_stopped"] = True
                     st.session_state["show_success"] = False
@@ -131,7 +133,7 @@ def controlPanel():
                     st.session_state["show_stopped"] = False
                     st.session_state["have_stopped"] = False
                     try:
-                        response = requests.post("http://egg_backend:8000/finalize/")
+                        response = requests.delete("http://egg_backend:8000/finalize/")
                         response.raise_for_status()
                     except Exception as e:
                         st.error(f"Failed to create finalize: {e}")
