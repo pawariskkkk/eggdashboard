@@ -83,30 +83,31 @@ def controlPanel():
         start_disabled = not (farm and house and mfg_date and tray_amount > 0)
 
         with ctrl1:
-            if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
-                st.session_state.stopped = True
-                if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
-                    # Prepare data for API
-                    data = {
-                        "date": date.today().isoformat(),
-                        "farm": farm,
-                        "house": house,
-                        "mfg": mfg_date.isoformat(),
-                        "tray_amount": tray_amount
-                    }
-                    try:
-                        response = requests.post("http://egg_backend:8000/firsttime/", json=data)
-                        response.raise_for_status()
-                    except Exception as e:
-                        st.error(f"Failed to create session: {e}")
-                        st.stop()
-                    st.session_state.starttime = date.today()
-                    
-                inputDisable()
-                st.session_state.started = True
-                st.session_state["show_success"] = True
-                st.session_state["show_stopped"] = False
-                st.rerun()
+            if not st.session_state.started:
+                if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
+                    st.session_state.stopped = True
+                    if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
+                        # Prepare data for API
+                        data = {
+                            "date": date.today().isoformat(),
+                            "farm": farm,
+                            "house": house,
+                            "mfg": mfg_date.isoformat(),
+                            "tray_amount": tray_amount
+                        }
+                        try:
+                            response = requests.post("http://egg_backend:8000/firsttime/", json=data)
+                            response.raise_for_status()
+                        except Exception as e:
+                            st.error(f"Failed to create session: {e}")
+                            st.stop()
+                        st.session_state.starttime = date.today()
+                        
+                    inputDisable()
+                    st.session_state.started = True
+                    st.session_state["show_success"] = True
+                    st.session_state["show_stopped"] = False
+                    st.rerun()
 
             if st.session_state.get("show_success"):
                 st.success("Production Started")

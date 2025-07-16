@@ -68,7 +68,9 @@ def Datatable():
         FROM egg
         WHERE tray_number > 0
     """
-    on = st.sidebar.toggle("Real-Time table")
+    
+    #filter function
+    date_to, date_from, mfg_from, mfg_to, farm_filter, house_filter, clear_filter, date_filter, mfg_filter, on = filter()
     
     try:
         if on:
@@ -89,9 +91,6 @@ def Datatable():
         st.info("Could not load data from database. Displaying column headers only.")
         st.dataframe(pd.DataFrame(columns=columns), use_container_width=True)
         return
-
-    #filter function
-    date_to, date_from, mfg_from, mfg_to, farm_filter, house_filter, clear_filter, date_filter, mfg_filter = filter()
 
     # --- Filtering ---
     filtered_df = df.copy()

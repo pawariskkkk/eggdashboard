@@ -52,11 +52,13 @@ def filter():
         house_filter = houseSelectbox(filter2, False, "house_table")
 
     # --- Filter Buttons ---
-    b1, b2, *_, b11 = st.columns(11)
+    b1, b2, b3, b11 = st.columns([1,1,9,1])
     with b1:
         lweek = st.button("Last Week")
     with b2:
         lmonth = st.button("Last Month")
+    with b3:
+        on = st.toggle("Real-Time table")
     with b11:
         clear_filter = st.button("Clear Filters")
 
@@ -69,4 +71,4 @@ def filter():
         st.session_state["lastmonth_filters_table"] = True
         st.rerun()
         
-    return date_to, date_from, mfg_from, mfg_to, farm_filter, house_filter, clear_filter, date_filter, mfg_filter
+    return date_to, date_from, mfg_from, mfg_to, farm_filter, house_filter, clear_filter, date_filter, mfg_filter, on
