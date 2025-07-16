@@ -136,7 +136,7 @@ def Datatable():
         st.dataframe(pd.DataFrame(columns=filtered_df.columns), use_container_width=True)
     else:
         filtered_df = filtered_df.sort_index(ascending=False)
-        st.dataframe(filtered_df, use_container_width=True) 
+        st.dataframe(filtered_df, use_container_width=True, height=650) 
 
     # --- CSV Export ---
     leftdummy, left_col = st.columns([17, 2])
