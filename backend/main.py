@@ -11,6 +11,36 @@ from sqlalchemy.sql import text
 # Create tables in the database
 models.Base.metadata.create_all(bind=engine)
 
+# Then create partitioned tables manually via raw SQL
+with engine.connect() as conn:
+    conn.execute(text("""
+    CREATE TABLE IF NOT EXISTS egg (
+        id BIGINT AUTO_INCREMENT,
+        tray_number INT,
+        date DATE NOT NULL,
+        farm VARCHAR(45),
+        house VARCHAR(45),
+        mfg DATE NOT NULL,
+        good_egg INT NOT NULL,
+        dirty_egg INT NOT NULL,
+        cam_status BOOLEAN,
+        cam_id INT NOT NULL,
+        tray_amount INT NOT NULL,
+        PRIMARY KEY (id, date)
+    )
+    ENGINE=InnoDB
+    PARTITION BY RANGE (YEAR(date)) (
+        PARTITION p2025 VALUES LESS THAN (2026),
+        PARTITION p2026 VALUES LESS THAN (2027),
+        PARTITION p2027 VALUES LESS THAN (2028),
+        PARTITION p2028 VALUES LESS THAN (2029),
+        PARTITION p2029 VALUES LESS THAN (2030),
+        PARTITION p2030 VALUES LESS THAN (2031),
+        PARTITION p2031 VALUES LESS THAN (2032),
+        PARTITION pmax VALUES LESS THAN MAXVALUE
+    );
+"""))
+
 app = FastAPI(debug=True)
 
 # Dependency to get DB session

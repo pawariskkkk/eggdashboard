@@ -9,7 +9,7 @@ class Egg(Base):
     
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     tray_number = Column(Integer)
-    date = Column(Date, nullable=False)
+    date = Column(Date, nullable=False, primary_key=True)
     farm = Column(String(45), nullable=True)
     house = Column(String(45), nullable=True)
     mfg = Column(Date, nullable=False)

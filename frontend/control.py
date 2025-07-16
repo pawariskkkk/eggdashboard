@@ -113,7 +113,7 @@ def controlPanel():
             if st.session_state.get("show_success"):
                 st.success("Production Started")
         with ctrl2:
-            if st.session_state.stopped:
+            if st.session_state.stopped and st.session_state.started:
                 if st.button("⏹ Stop", use_container_width=True):
                     requests.post("http://egg_backend:8000/toggle-api/", json={"enabled": False})
                     st.session_state.started = False
