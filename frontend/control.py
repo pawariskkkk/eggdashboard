@@ -86,7 +86,6 @@ def controlPanel():
             if not st.session_state.started:
                 if st.button("▶️ Start", disabled=start_disabled, use_container_width=True):
                     requests.post("http://egg_backend:8000/toggle-api/", json={"enabled": True})
-                    st.session_state.stopped = True
                     if ("have_stopped" not in st.session_state) or st.session_state["have_stopped"] == False:
                         # Prepare data for API
                         data = {
@@ -103,7 +102,7 @@ def controlPanel():
                             st.error(f"Failed to create session: {e}")
                             st.stop()
                         st.session_state.starttime = date.today()
-                        
+                    st.session_state.stopped = True    
                     inputDisable()
                     st.session_state.started = True
                     st.session_state["show_success"] = True
