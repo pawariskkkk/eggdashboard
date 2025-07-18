@@ -30,7 +30,7 @@ def query(table_name, start_date, end_date):
     """
     return query
 
-#use with api
+#use with api but failed
 def table(table_name):
     try:
         data = get_table_summary(table_name)  # this is already a list of dicts
@@ -68,9 +68,11 @@ def Datatable():
         if on:
             query1 = query("real_time", start_date, end_date)
             df = pd.read_sql(query1, engine)
+            #df = table("real_time") #api failed
         else:
             query2 = query("egg", start_date, end_date)
             df = pd.read_sql(query2, engine)
+            #df = table("egg") #api failed
         # Convert date columns to datetime
         df["Date"] = pd.to_datetime(df["Date"])
         df["Manufacturing Date"] = pd.to_datetime(df["Manufacturing Date"])
@@ -130,7 +132,8 @@ def Datatable():
         st.dataframe(pd.DataFrame(columns=filtered_df.columns), use_container_width=True)
     else:
         filtered_df = filtered_df.sort_index(ascending=False)
-        st.dataframe(filtered_df, use_container_width=True, height=650) 
+        #show table here
+        st.dataframe(filtered_df, use_container_width=True, height=600) 
 
     # --- CSV Export ---
     leftdummy, left_col = st.columns([17, 2])

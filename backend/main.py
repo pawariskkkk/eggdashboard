@@ -119,6 +119,12 @@ async def get_table_summary(table_name: str, db: Session = Depends(get_db)):
 
     selected_table = ALLOWED_TABLES[table_name]
 
+    cur_year = datetime.now().year
+    prev_year = cur_year - 1
+
+    start_date = f"{prev_year}-01-01"
+    end_date = f"{cur_year + 1}-01-01"
+
     # Write slightly different query if needed, or same one for both
     query = text(f"""
         SELECT 
@@ -131,10 +137,10 @@ async def get_table_summary(table_name: str, db: Session = Depends(get_db)):
                 WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
                     ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
                 ELSE 0
-            END AS "Dirty Eggs %",
+            END AS "Dirty Eggs %%",
             tray_number AS "Tray Number"
         FROM {selected_table}
-        WHERE tray_number > 0
+        WHERE tray_number > 0 AND date >= '{start_date}' AND date < '{end_date}';
     """)
 
     try:

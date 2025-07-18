@@ -26,12 +26,13 @@ def filter():
 
     # --- Filter UI ---
     c1, c2, c3 = st.columns(3)
-    date_filter = c1.selectbox("Date", ["All Dates", "Pick a Range"], key="date_selectbox_table")
+    date_filter = c1.selectbox("Date", ["All Dates", "Pick a Range"], key="date_selectbox_table", index=1)
     
     with c1:
         filter1, filter2 = st.columns(2)
         if date_filter == "Pick a Range":
-            date_from = filter1.date_input("Date From", key="date_from_table")
+            default_from = date.today() - timedelta(days=7)
+            date_from = filter1.date_input("Date From", key="date_from_table", value=default_from)
             date_to = filter2.date_input("Date To", key="date_to_table")
         else:
             date_from = None
