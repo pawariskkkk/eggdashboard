@@ -5,8 +5,30 @@ from sqlalchemy import create_engine
 from dashboard import check_for_trigger
 import os
 from fetch import get_table_summary
+from datetime import datetime
 
 engine = create_engine(os.getenv("DATABASE_URL"))
+
+#to define query for database
+def query(table_name, start_date, end_date):
+    table_name = table_name
+    query = f"""
+        SELECT 
+            date AS Date,
+            farm AS Farm,
+            house AS House,
+            mfg AS "Manufacturing Date",
+            (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) AS "Egg Amount",
+            CASE 
+                WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
+                    ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
+                ELSE 0
+            END AS "Dirty Eggs %%",
+            tray_number AS "Tray Number"
+        FROM {table_name}
+        WHERE tray_number > 0 AND date >= '{start_date}' AND date < '{end_date}';
+    """
+    return query
 
 #use with api
 def table(table_name):
@@ -33,49 +55,21 @@ def Datatable():
     st.set_page_config(layout="wide")
     st.title("📄 Data Table")
 
-    
-    # Read data from MySQL database with error handling
-    query1 = """
-        SELECT 
-            date AS Date,
-            farm AS Farm,
-            house AS House,
-            mfg AS "Manufacturing Date",
-            (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) AS "Egg Amount",
-            CASE 
-                WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
-                    ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
-                ELSE 0
-            END AS "Dirty Eggs %%",
-            tray_number AS "Tray Number"
-        FROM real_time
-        WHERE tray_number > 0
-    """
+    cur_year = datetime.now().year
+    prev_year = cur_year - 1
 
-    query2 = """
-        SELECT 
-            date AS Date,
-            farm AS Farm,
-            house AS House,
-            mfg AS "Manufacturing Date",
-            (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) AS "Egg Amount",
-            CASE 
-                WHEN (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)) > 0 THEN 
-                    ROUND(COALESCE(dirty_egg,0) * 100.0 / (COALESCE(good_egg,0) + COALESCE(dirty_egg,0)), 2)
-                ELSE 0
-            END AS "Dirty Eggs %%",
-            tray_number AS "Tray Number"
-        FROM egg
-        WHERE tray_number > 0
-    """
+    start_date = f"{prev_year}-01-01"
+    end_date = f"{cur_year + 1}-01-01"
     
     #filter function
     date_to, date_from, mfg_from, mfg_to, farm_filter, house_filter, clear_filter, date_filter, mfg_filter, on = filter()
     
     try:
         if on:
+            query1 = query("real_time", start_date, end_date)
             df = pd.read_sql(query1, engine)
         else:
+            query2 = query("egg", start_date, end_date)
             df = pd.read_sql(query2, engine)
         # Convert date columns to datetime
         df["Date"] = pd.to_datetime(df["Date"])
