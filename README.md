@@ -1,5 +1,12 @@
 # eggdashboard
 
+first time: docker compose up --build
+
+to delete volumes and image: docker compose down --volumes --rmi all
+
+
+
+
 To send images:
     send camera1 image to -> eggdashboard/frontend/images/camera1.jpg
     send camera2 image to -> eggdashboard/frontend/images/camera2.jpg
