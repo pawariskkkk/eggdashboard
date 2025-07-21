@@ -10,4 +10,4 @@ RUN chmod +x wait-for-it.sh
 
 EXPOSE 8501
 
-CMD ["./wait-for-it.sh", "egg_backend:8000", "--", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["./wait-for-it.sh", "egg_backend:8000", "--", "streamlit", "run", "app.py", "--server.fileWatcherType=poll","--server.port=8501", "--server.address=0.0.0.0"]
