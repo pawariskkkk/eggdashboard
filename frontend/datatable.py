@@ -26,7 +26,7 @@ def query(table_name, start_date, end_date):
             END AS "Dirty Eggs %%",
             tray_number AS "Tray Number"
         FROM {table_name}
-        WHERE tray_number > 0 AND date >= '{start_date}' AND date < '{end_date}';
+        WHERE tray_number > 0
     """
     return query
 
