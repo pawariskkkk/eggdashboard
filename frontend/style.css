@@ -11,3 +11,7 @@ section[data-testid="stSidebar"] {
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
+
+[data-testid='stHeaderActionElements'] {
+        display: none;
+}
