@@ -1,8 +1,10 @@
 # eggdashboard
 
-step1: run createdatabase.py
+step1: run createdatabase.py change user and password to yours
 
-step2: docer compose up --build
+step2: change .env user and password
+
+step3: docer compose up --build
 
 
 to delete volumes and image: docker compose down --volumes --rmi all
