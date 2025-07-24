@@ -1,8 +1,9 @@
 # eggdashboard
 
-run this file first to create database:
+step1: run createdatabase.py
 
-first time: docker compose up --build
+step2: docer compose up --build
+
 
 to delete volumes and image: docker compose down --volumes --rmi all
 
