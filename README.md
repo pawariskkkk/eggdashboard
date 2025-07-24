@@ -2,6 +2,7 @@
 
 step1: docker compose up --build -d or only docker compose up -d if you already build
 
+for linux run this in the directory that container wait-for-it.sh: sudo chmod +x wait-for-it.sh
 
 to delete volumes and image: docker compose down --volumes --rmi all
 
