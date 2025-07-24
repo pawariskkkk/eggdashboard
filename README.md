@@ -4,7 +4,7 @@ step1: run createdatabase.py change user and password to yours
 
 step2: change .env user and password
 
-step3: docer compose up --build
+step3: docker compose up --build -d or only docker compose up -d if you already build
 
 
 to delete volumes and image: docker compose down --volumes --rmi all
