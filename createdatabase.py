@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text
 # --- Step 1: Connect to MySQL server (without specifying a database) ---
 host = "localhost"
 user = "root"
-password = "cpf"
+password = "cpf1234"
 port = 3306
 
 connection = pymysql.connect(

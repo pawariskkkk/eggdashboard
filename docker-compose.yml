@@ -1,6 +1,18 @@
 version: "3.9"
 
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: egg_mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
   backend:
     build:
       context: .
@@ -8,10 +20,15 @@ services:
     container_name: egg_backend
     ports:
       - "8000:8000"
+    depends_on:
+      - mysql
     environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DB=${MYSQL_DB}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
       - DATABASE_URL=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - shared_data:/shared
       - ./backend:/app
@@ -28,9 +45,12 @@ services:
     depends_on:
       - backend
     environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DB=${MYSQL_DB}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
       - DATABASE_URL=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - shared_data:/shared
       - ./frontend:/app
@@ -38,3 +58,4 @@ services:
     restart: always
 volumes:
   shared_data:
+  mysql_data:
