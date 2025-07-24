@@ -1,5 +1,7 @@
 # eggdashboard
 
+run this file first to create database:
+
 first time: docker compose up --build
 
 to delete volumes and image: docker compose down --volumes --rmi all
