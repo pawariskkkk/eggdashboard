@@ -4,6 +4,8 @@ step1: docker compose up --build -d or only docker compose up -d if you already 
 
 for linux run this in the directory that container wait-for-it.sh: sudo chmod +x wait-for-it.sh
 
+step2: set mysql workbench host:127.0.0.1 port:3307
+
 to delete volumes and image: docker compose down --volumes --rmi all
 
 
